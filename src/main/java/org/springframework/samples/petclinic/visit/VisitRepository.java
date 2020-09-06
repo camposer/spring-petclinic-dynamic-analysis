@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.repository.Repository;
+import org.springframework.samples.petclinic.logging.LogExecutionTime;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
 /**
@@ -32,6 +33,7 @@ import org.springframework.samples.petclinic.model.BaseEntity;
  * @author Sam Brannen
  * @author Michael Isvy
  */
+@LogExecutionTime
 public interface VisitRepository extends Repository<Visit, Integer> {
 
 	/**

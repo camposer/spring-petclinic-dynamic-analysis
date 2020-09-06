@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import org.springframework.samples.petclinic.logging.LogExecutionTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +29,7 @@ import java.util.Map;
  * @author Arjen Poutsma
  */
 @Controller
+@LogExecutionTime
 class VetController {
 
 	private final VetRepository vets;

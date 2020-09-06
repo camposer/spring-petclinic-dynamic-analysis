@@ -16,10 +16,12 @@
 
 package org.springframework.samples.petclinic.system;
 
+import org.springframework.samples.petclinic.logging.LogExecutionTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@LogExecutionTime
 class WelcomeController {
 
 	@GetMapping("/")

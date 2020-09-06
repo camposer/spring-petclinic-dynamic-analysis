@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.samples.petclinic.logging.LogExecutionTime;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @author Dave Syer
  */
 @Controller
+@LogExecutionTime
 class VisitController {
 
 	private final VisitRepository visits;
