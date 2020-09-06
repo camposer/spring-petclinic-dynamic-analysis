@@ -1,5 +1,9 @@
 # Spring PetClinic Sample Application [![Build Status](https://travis-ci.org/spring-projects/spring-petclinic.png?branch=main)](https://travis-ci.org/spring-projects/spring-petclinic/)
 
+**This is a fork of the original petclinic project, it includes some changes in the code and scripts you could use for dynamic analysis**
+
+See folder: [dynamic-analysis](dynamic-analysis)
+
 ## Understanding the Spring Petclinic application with a few diagrams
 <a href="https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application">See the presentation here</a>
 
