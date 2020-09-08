@@ -6,10 +6,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@Profile("dynamic-analysis")
 public class LogExecutionTimeAspect {
 	private final Logger logger = LoggerFactory.getLogger(LogExecutionTimeAspect.class);
 
@@ -50,7 +52,7 @@ public class LogExecutionTimeAspect {
 		long start = System.currentTimeMillis();
 		Object proceed = joinPoint.proceed();
 		long executionTime = System.currentTimeMillis() - start;
-		logger.debug("{} executed in {}ms", joinPoint.getSignature() , executionTime);
+		logger.info("{} executed in {}ms", joinPoint.getSignature() , executionTime);
 		return proceed;
 	}
 }
