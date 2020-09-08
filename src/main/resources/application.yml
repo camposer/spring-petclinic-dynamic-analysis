@@ -1,0 +1,24 @@
+database: h2
+spring:
+  datasource:
+    schema: classpath*:db/${database}/schema.sql
+    data: classpath*:db/${database}/data.sql
+  jpa:
+    hibernate.ddl-auto: none
+    open-in-view: false
+  thymeleaf:
+    mode: HTML
+  messages:
+    basename: messages/messages
+  resources:
+    cache:
+      cachecontrol.max-age: 12h
+
+management.endpoints.web.exposure.include: '*'
+
+logging:
+  level:
+    org.springframework: INFO
+  components:
+    - '.+ org\.springframework\.samples\.petclinic\.vet\.VetController.+'
+    - '.+ org\.springframework\.samples\.petclinic\.owner\.OwnerController.+'

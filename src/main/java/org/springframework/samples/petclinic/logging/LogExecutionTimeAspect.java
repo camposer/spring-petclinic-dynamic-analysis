@@ -11,8 +11,13 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LogExecutionTimeAspect {
-
 	private final Logger logger = LoggerFactory.getLogger(LogExecutionTimeAspect.class);
+
+	private final LoggingConfig loggingConfig;
+
+	public LogExecutionTimeAspect(LoggingConfig loggingConfig) {
+		this.loggingConfig = loggingConfig;
+	}
 
 	@Pointcut("@annotation(org.springframework.samples.petclinic.logging.LogExecutionTime)")
 	public void annotatedMethod() {
@@ -22,16 +27,30 @@ public class LogExecutionTimeAspect {
 	public void annotatedClass() {
 	}
 
-	@Around("execution(* *(..)) && (annotatedMethod() || annotatedClass())")
-	public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-		long start = System.currentTimeMillis();
-
-		Object proceed = joinPoint.proceed();
-
-		long executionTime = System.currentTimeMillis() - start;
-
-		logger.debug(joinPoint.getSignature() + " executed in " + executionTime + "ms");
-		return proceed;
+	@Pointcut("!execution(* org.springframework.samples.petclinic.logging..*(..))")
+	public void ignoreLoggingClasses() {
 	}
 
+	@Around("execution(* *(..)) && (annotatedMethod() || annotatedClass())")
+	public Object logExecutionTimeAround(ProceedingJoinPoint joinPoint) throws Throwable {
+		return logExecutionTime(joinPoint);
+	}
+
+	@Around("execution(* org.springframework.samples.petclinic..*.*(..)) && ignoreLoggingClasses()")
+	public Object logExecutionTimeMatches(ProceedingJoinPoint joinPoint) throws Throwable {
+		String signature = joinPoint.getSignature().toString();
+		boolean matches = loggingConfig.getComponents().stream().map(c -> signature.matches(c)).reduce(false, (a, b) -> a | b);
+		if (matches) {
+			return logExecutionTime(joinPoint);
+		}
+		return joinPoint.proceed();
+	}
+
+	private Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+		long start = System.currentTimeMillis();
+		Object proceed = joinPoint.proceed();
+		long executionTime = System.currentTimeMillis() - start;
+		logger.debug("{} executed in {}ms", joinPoint.getSignature() , executionTime);
+		return proceed;
+	}
 }

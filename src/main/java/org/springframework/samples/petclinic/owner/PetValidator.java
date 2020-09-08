@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import org.springframework.samples.petclinic.logging.LogExecutionTime;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -30,7 +29,6 @@ import org.springframework.validation.Validator;
  * @author Ken Krebs
  * @author Juergen Hoeller
  */
-@LogExecutionTime
 public class PetValidator implements Validator {
 
 	private static final String REQUIRED = "required";

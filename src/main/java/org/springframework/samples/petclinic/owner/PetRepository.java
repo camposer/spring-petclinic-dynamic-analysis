@@ -15,12 +15,11 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import org.springframework.samples.petclinic.logging.LogExecutionTime;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Repository class for <code>Pet</code> domain objects All method names are compliant
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-@LogExecutionTime
 public interface PetRepository extends Repository<Pet, Integer> {
 
 	/**
