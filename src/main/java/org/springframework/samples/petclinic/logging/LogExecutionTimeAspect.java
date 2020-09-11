@@ -34,12 +34,12 @@ public class LogExecutionTimeAspect {
 	}
 
 	@Around("execution(* *(..)) && (annotatedMethod() || annotatedClass())")
-	public Object logExecutionTimeAround(ProceedingJoinPoint joinPoint) throws Throwable {
+	public Object logExecutionTimeAnnotated(ProceedingJoinPoint joinPoint) throws Throwable {
 		return logExecutionTime(joinPoint);
 	}
 
 	@Around("execution(* org.springframework.samples.petclinic..*.*(..)) && ignoreLoggingClasses()")
-	public Object logExecutionTimeMatches(ProceedingJoinPoint joinPoint) throws Throwable {
+	public Object logExecutionTimeRegexMatches(ProceedingJoinPoint joinPoint) throws Throwable {
 		String signature = joinPoint.getSignature().toString();
 		boolean matches = loggingConfig.getComponents().stream().map(c -> signature.matches(c)).reduce(false, (a, b) -> a | b);
 		if (matches) {
