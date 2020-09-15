@@ -1,0 +1,18 @@
+{
+  "name": "2x2",
+  "version": "1.0.0",
+  "description": "2x2 processing script",
+  "main": "2x2.sh",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "DynamicAnalysis",
+    "2x2"
+  ],
+  "author": "Rodolfo Campos",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^8.1.3"
+  }
+}
