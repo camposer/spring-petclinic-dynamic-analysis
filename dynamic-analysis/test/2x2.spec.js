@@ -1,5 +1,6 @@
 const assert = require('assert');
 
+// TODO: Include more tests, specially for complex functions
 describe('2x2', function () {
   describe('#getHighHitsHighMillis()', function () {
     it('returns empty list when there is no match for the given regex ', async function () {

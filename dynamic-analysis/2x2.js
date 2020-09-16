@@ -10,13 +10,10 @@ exports.setReadline = function(_readline) {
     readline = _readline; 
 }
 
+// TODO: Include a quadrant property and change this function to return the complete matrix
 exports.getHighHitsHighMillis = async function(filePath, signatureRegex) {
     const components = await getComponentsFromLogs(filePath, signatureRegex);
-
-    const hitsExtractor = (c) => c.millis.length;
     const rankedComponentsByHits = rankComponents(getComponentsSortedDescByHits(components), hitsExtractor);
-
-    const millisExtractor = (c) => c.millisSum / c.millis.length;
     const rankedComponentsByMillis = rankComponents(getComponentsSortedDescByMillis(components), millisExtractor);
 
     if (rankedComponentsByHits.length === 0 || rankedComponentsByMillis === 0) {
@@ -101,6 +98,14 @@ function rankComponents(components, propertyExtractor) {
     return rankedComponents;
 }
 
+function hitsExtractor(c) {
+    return c.millis.length;
+}
+
+function millisExtractor(c) {
+    return c.millisSum / c.millis.length;
+}
+
 function getHighComponents(rankedComponents) {
     const centroid = Math.floor(rankedComponents[rankedComponents.length - 1].rank / 2);
     let idx = 1;
@@ -110,7 +115,7 @@ function getHighComponents(rankedComponents) {
         }
         idx++;
     }
-    return [...rankedComponents].slice(0, idx);
+    return rankedComponents.slice(0, idx);
 }
 
 function getMatches(highHitComponents, highMillisComponents) {
@@ -134,12 +139,11 @@ function mapFromArray(components) {
 }
 
 function createMatchResult(hitComponent, millisComponent) {
-    const matchResult = deepClone(millisComponent);
-    matchResult.rankMillis = matchResult.rank;
-    delete matchResult.rank;
-    matchResult.rankHits = hitComponent.rank;
-    matchResult.hits = hitComponent.millis.length;
-    matchResult.millis = matchResult.millisSum / matchResult.hits;
-    delete matchResult.millisSum;
-    return matchResult;
+    return {
+        key: hitComponent.key,
+        hits: hitComponent.millis.length,
+        millis: hitComponent.millisSum / hitComponent.millis.length, 
+        rankHits: hitComponent.rank,
+        rankMillis: millisComponent.rank,
+    };
 }
