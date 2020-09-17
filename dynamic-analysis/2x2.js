@@ -1,6 +1,7 @@
 let fs = require('fs');
 let readline = require('readline');
-const { match } = require('assert');
+
+const Q1 = 'q1', Q2 = 'q2', Q3 = 'q3', Q4 = 'q4';
 
 exports.setFs = function(_fs) {
     fs = _fs; 
@@ -10,20 +11,16 @@ exports.setReadline = function(_readline) {
     readline = _readline; 
 }
 
-// TODO: Include a quadrant property and change this function to return the complete matrix
-exports.getHighHitsHighMillis = async function(filePath, signatureRegex) {
+exports.getMatrix = async function(filePath, signatureRegex) {
     const components = await getComponentsFromLogs(filePath, signatureRegex);
     const rankedComponentsByHits = rankComponents(getComponentsSortedDescByHits(components), hitsExtractor);
     const rankedComponentsByMillis = rankComponents(getComponentsSortedDescByMillis(components), millisExtractor);
 
     if (rankedComponentsByHits.length === 0 || rankedComponentsByMillis === 0) {
-        return [];
+        return initQuadrants();
     }
-
-    const highHitComponents = getHighComponents(rankedComponentsByHits);
-    const highMillisComponents = getHighComponents(rankedComponentsByMillis);
-
-    return getMatches(highHitComponents, highMillisComponents);
+    
+    return getQuadrants(rankedComponentsByHits, rankedComponentsByMillis);
 }
 
 async function getComponentsFromLogs(filePath, signatureRegex) {
@@ -98,6 +95,10 @@ function rankComponents(components, propertyExtractor) {
     return rankedComponents;
 }
 
+function initQuadrants() {
+    return { [Q1]: [], [Q2]: [], [Q3]: [], [Q4]: [] };
+}
+
 function hitsExtractor(c) {
     return c.millis.length;
 }
@@ -106,28 +107,26 @@ function millisExtractor(c) {
     return c.millisSum / c.millis.length;
 }
 
-function getHighComponents(rankedComponents) {
-    const centroid = Math.floor(rankedComponents[rankedComponents.length - 1].rank / 2);
-    let idx = 1;
-    for (const c of rankedComponents) {
-        if (c.rank >= centroid) {
-            break;
-        }
-        idx++;
+function getQuadrants(rankedComponentsByHits, rankedComponentsByMillis) {
+    const quadrants = initQuadrants();
+    const centroid = calculateCentroid(rankedComponentsByHits, rankedComponentsByMillis);
+    const rankedComponentsByMillisMap = mapFromArray(rankedComponentsByMillis);
+    for (const rankedComponentByHit of rankedComponentsByHits) {
+        const mergedComponent = mergeComponents(
+            rankedComponentByHit, 
+            rankedComponentsByMillisMap[rankedComponentByHit.key],
+            centroid
+        );
+        quadrants[mergedComponent.quadrant].push(mergedComponent);
     }
-    return rankedComponents.slice(0, idx);
+    return quadrants;
 }
 
-function getMatches(highHitComponents, highMillisComponents) {
-    const highMillisComponentsMap = mapFromArray(highMillisComponents);
-    const matches = [];
-    for (const hitComponent of highHitComponents) {
-        const millisComponent = highMillisComponentsMap[hitComponent.key];
-        if (millisComponent != null) {
-            matches.push(createMatchResult(hitComponent, millisComponent));           
-        }
-    }
-    return matches;
+function calculateCentroid(rankedComponentsByHits, rankedComponentsByMillis) {
+    return {
+        hitsRank: Math.ceil(rankedComponentsByHits[rankedComponentsByHits.length - 1].rank / 2),
+        millisRank: Math.ceil(rankedComponentsByMillis[rankedComponentsByMillis.length - 1].rank / 2)
+    };
 }
 
 function mapFromArray(components) {
@@ -138,12 +137,24 @@ function mapFromArray(components) {
     return map;
 }
 
-function createMatchResult(hitComponent, millisComponent) {
+function mergeComponents(hitComponent, millisComponent, centroid) {
     return {
         key: hitComponent.key,
         hits: hitComponent.millis.length,
         millis: hitComponent.millisSum / hitComponent.millis.length, 
-        rankHits: hitComponent.rank,
-        rankMillis: millisComponent.rank,
+        hitsRank: hitComponent.rank,
+        millisRank: millisComponent.rank,
+        quadrant: calculateQuadrant(hitComponent, millisComponent, centroid)
     };
+}
+
+function calculateQuadrant(hitComponent, millisComponent, centroid) {
+    if (hitComponent.rank <= centroid.hitsRank && millisComponent.rank <= centroid.millisRank)
+        return Q1;
+    else if (hitComponent.rank <= centroid.hitsRank && millisComponent.rank > centroid.millisRank)
+        return Q2;
+    else if (hitComponent.rank > centroid.hitsRank && millisComponent.rank > centroid.millisRank)
+        return Q3;
+    else 
+        return Q4;
 }
