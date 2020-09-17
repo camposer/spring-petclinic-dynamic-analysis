@@ -110,7 +110,7 @@ function millisExtractor(c) {
 function getQuadrants(rankedComponentsByHits, rankedComponentsByMillis) {
     const quadrants = initQuadrants();
     quadrants.centroid = calculateCentroid(rankedComponentsByHits, rankedComponentsByMillis);
-    const rankedComponentsByMillisMap = mapFromArray(rankedComponentsByMillis);
+    const rankedComponentsByMillisMap = arrayToMap(rankedComponentsByMillis);
     for (const rankedComponentByHit of rankedComponentsByHits) {
         const mergedComponent = mergeComponents(
             rankedComponentByHit, 
@@ -129,7 +129,7 @@ function calculateCentroid(rankedComponentsByHits, rankedComponentsByMillis) {
     };
 }
 
-function mapFromArray(components) {
+function arrayToMap(components) {
     const map = {};
     for (const c of components) {
         map[c.key] = c;
