@@ -7,15 +7,15 @@ if (process.argv.length !== 4) {
   process.exit(-1);
 }
 
-const matrix = require('./2x2.js');
+const twoByTwo = require('./2x2.js');
 const filePath = process.argv[2];
 const signatureRegex = process.argv[3];
 
 (async function () {
-  const highHitsHighMillis = await matrix.getHighHitsHighMillis(filePath, signatureRegex);
-  printHighHitsHighMillis(highHitsHighMillis);
+  const matrix = await twoByTwo.getMatrix(filePath, signatureRegex);
+  printMatrix(matrix);
 })();
 
-function printHighHitsHighMillis(highHitsHighMillis) {
-  console.log(highHitsHighMillis);
+function printMatrix(matrix) {
+  console.log(matrix);
 }
