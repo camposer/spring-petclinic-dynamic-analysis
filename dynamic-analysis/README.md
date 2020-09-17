@@ -1,5 +1,20 @@
 # Dynamic Analysis
 
+## How to use 2x2
+
+You can run the following command:
+```
+./2x2.sh /tmp/petclinic.log org
+```
+That would show all components containing the keyword **org** inside of the logs (captured previously)
+
+### Tests
+
+If you want to run the tests:
+```
+npm run test
+```
+
 ## Useful commands
 
 Execution time by layer - you could replace Controller by Repository or something else
