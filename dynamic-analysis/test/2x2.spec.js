@@ -11,6 +11,7 @@ describe('2x2', function () {
       ]);
 
       const expected = {
+        centroid: {},
         q1: [],
         q2: [],
         q3: [],
@@ -29,6 +30,10 @@ describe('2x2', function () {
       ]);
 
       const expected = {
+        centroid: {
+          hitsRank: 1,
+          millisRank: 1
+        },
         q1: [],
         q2: [
           {
@@ -68,6 +73,10 @@ describe('2x2', function () {
       ]);
 
       const expected = {
+        centroid: {
+          hitsRank: 2,
+          millisRank: 2
+        },
         q1: [
           {
             hits: 3,
@@ -120,6 +129,10 @@ describe('2x2', function () {
       ]);
 
       const expected = {
+        centroid: {
+          hitsRank: 2,
+          millisRank: 2
+        },
         q1: [
           {
             key: 'org.should.be.considered.RepositoryFour.method(param1)',

@@ -96,7 +96,7 @@ function rankComponents(components, propertyExtractor) {
 }
 
 function initQuadrants() {
-    return { [Q1]: [], [Q2]: [], [Q3]: [], [Q4]: [] };
+    return { [Q1]: [], [Q2]: [], [Q3]: [], [Q4]: [], centroid: {} };
 }
 
 function hitsExtractor(c) {
@@ -109,13 +109,13 @@ function millisExtractor(c) {
 
 function getQuadrants(rankedComponentsByHits, rankedComponentsByMillis) {
     const quadrants = initQuadrants();
-    const centroid = calculateCentroid(rankedComponentsByHits, rankedComponentsByMillis);
+    quadrants.centroid = calculateCentroid(rankedComponentsByHits, rankedComponentsByMillis);
     const rankedComponentsByMillisMap = mapFromArray(rankedComponentsByMillis);
     for (const rankedComponentByHit of rankedComponentsByHits) {
         const mergedComponent = mergeComponents(
             rankedComponentByHit, 
             rankedComponentsByMillisMap[rankedComponentByHit.key],
-            centroid
+            quadrants.centroid
         );
         quadrants[mergedComponent.quadrant].push(mergedComponent);
     }
