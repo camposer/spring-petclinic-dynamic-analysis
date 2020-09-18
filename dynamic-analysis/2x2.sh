@@ -7,14 +7,26 @@ if (process.argv.length !== 4) {
   process.exit(-1);
 }
 
+const fs = require('fs');
+const readline = require('readline');
 const twoByTwo = require('./2x2.js');
+
 const filePath = process.argv[2];
 const signatureRegex = process.argv[3];
 
 (async function () {
-  const matrix = await twoByTwo.getMatrix(filePath, signatureRegex);
+  const logLines = getLogLines(filePath);
+  const matrix = await twoByTwo.getMatrix(logLines, signatureRegex);
   printMatrix(matrix);
 })();
+
+function getLogLines(filePath) {
+  const fileStream = fs.createReadStream(filePath);
+  return readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity
+  });
+}
 
 function printMatrix(matrix) {
   console.log(matrix);

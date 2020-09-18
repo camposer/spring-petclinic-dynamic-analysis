@@ -1,18 +1,7 @@
-let fs = require('fs');
-let readline = require('readline');
-
 const Q1 = 'q1', Q2 = 'q2', Q3 = 'q3', Q4 = 'q4';
 
-exports.setFs = function(_fs) {
-    fs = _fs; 
-}
-
-exports.setReadline = function(_readline) {
-    readline = _readline; 
-}
-
-exports.getMatrix = async function(filePath, signatureRegex) {
-    const components = await getComponentsFromLogs(filePath, signatureRegex);
+exports.getMatrix = async function(logLines, signatureRegex) {
+    const components = await getComponentsFromLogs(logLines, signatureRegex);
     const rankedComponentsByHits = rankComponents(getComponentsSortedDescByHits(components), hitsExtractor);
     const rankedComponentsByMillis = rankComponents(getComponentsSortedDescByMillis(components), millisExtractor);
 
@@ -23,10 +12,10 @@ exports.getMatrix = async function(filePath, signatureRegex) {
     return getQuadrants(rankedComponentsByHits, rankedComponentsByMillis);
 }
 
-async function getComponentsFromLogs(filePath, signatureRegex) {
+async function getComponentsFromLogs(logLines, signatureRegex) {
     const componentsMap = {};
 
-    for await (const logLine of getLogLines(filePath)) {
+    for await (const logLine of logLines) {
         const signatureAndMillis = getSignatureAndMillis(logLine, signatureRegex);
         if (!signatureAndMillis) {
             continue;
@@ -40,14 +29,6 @@ async function getComponentsFromLogs(filePath, signatureRegex) {
     }
 
     return mapToArray(componentsMap);
-}
-
-function getLogLines(filePath) {
-    const fileStream = fs.createReadStream(filePath);
-    return readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity
-    });
 }
 
 function getSignatureAndMillis(line, signatureRegex) {
@@ -104,7 +85,7 @@ function hitsExtractor(c) {
 }
 
 function millisExtractor(c) {
-    return c.millisSum / c.millis.length;
+    return c.millisSum / c.millis.length; // avg
 }
 
 function getQuadrants(rankedComponentsByHits, rankedComponentsByMillis) {
