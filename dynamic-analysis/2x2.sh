@@ -4,6 +4,11 @@ if (process.argv.length !== 4) {
   console.log('./2x2.sh LOG_FILE SIGNATURE_REGEX');
   console.log('LOG_FILE: Log file full path');
   console.log('SIGNATURE_REGEX: Signature regular expression');
+  console.log('Legend:');
+  console.log('q1: Add tests');
+  console.log('q2: Modernise later');
+  console.log('q3: Discard');
+  console.log('q4: Investigate more');
   process.exit(-1);
 }
 
